@@ -4,9 +4,12 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Temp/Android-Java/I_find/SNS_Project_TS/app/src/main/res/layout/activity_i_find_login.xml" value="0.12228260869565218" />
+        <entry key="..\:/Temp/Android-Java/I_find/SNS_Project_TS/app/src/main/res/layout/activity_i_search_login.xml" value="0.13370332996972756" />
         <entry key="..\:/Temp/Android-Java/I_find/SNS_Project_TS/app/src/main/res/layout/activity_login.xml" value="0.12228260869565218" />
         <entry key="..\:/Temp/Android-Java/I_find/SNS_Project_TS/app/src/main/res/layout/activity_main.xml" value="0.12228260869565218" />
         <entry key="..\:/Temp/Android-Java/I_find/SNS_Project_TS/app/src/main/res/layout/activity_member_init.xml" value="0.12228260869565218" />
+        <entry key="..\:/Temp/Android-Java/I_find/SNS_Project_TS/app/src/main/res/layout/activity_sign_up.xml" value="0.2595108695652174" />
+        <entry key="..\:/Temp/Android-Java/I_find/SNS_Project_TS/app/src/main/res/layout/sign_up.xml" value="0.2595108695652174" />
       </map>
     </option>
   </component>

@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="이름"
+        android:textSize="20dp"
         android:inputType="textPersonName" />
 
     <EditText
@@ -28,7 +29,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="전화번호"
+        android:textSize="20dp"
+        android:hint="전화번호 (- 제외, 숫자만)"
         android:inputType="phone" />
 
     <EditText
@@ -36,7 +38,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="생일"
+        android:textSize="20dp"
+        android:hint="생일(ex. 19950101)"
         android:inputType="date" />
 
     <EditText
@@ -44,6 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:textSize="20dp"
         android:hint="주소"
         android:inputType="textPostalAddress" />
 

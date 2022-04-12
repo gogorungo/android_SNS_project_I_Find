@@ -21,35 +21,20 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sign_up);
+        setContentView(R.layout.activity_sign_up);
 
         mAuth = FirebaseAuth.getInstance();
 
         findViewById(R.id.signUpOKBtn).setOnClickListener(onClickListener);
-        findViewById(R.id.gotoLogin).setOnClickListener(onClickListener);
     }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        moveTaskToBack(true);
-        android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(1);
-    }
-
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
 
         @Override
         public void onClick(View v) {
-            switch (v.getId()){
-                case R.id.signUpOKBtn:
-                    signUp();
-                    break;
-
-                case R.id.gotoLogin:
-                    myStartActivity(com.example.sns_project_ts.LoginActivity.class);
-                    break;
+            int id = v.getId();
+            if (id == R.id.signUpOKBtn) {
+                signUp();
             }
         }
     };
@@ -72,7 +57,7 @@ public class SignUpActivity extends AppCompatActivity {
                                     myStartActivity(MainActivity.class);
                                 } else {
                                     if(task.getException() != null){
-                                        startToast(task.getException().toString());
+                                        startToast("이미 존재하는 계정입니다");
                                     }
                                 }
                             }

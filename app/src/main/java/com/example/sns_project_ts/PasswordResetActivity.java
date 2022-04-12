@@ -50,6 +50,9 @@ public class PasswordResetActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 startToast("이메일을 보냈습니다");
+                                finish();
+                            } else {
+                                startToast("이메일이 존재하지 않습니다");
                             }
                         }
                     });

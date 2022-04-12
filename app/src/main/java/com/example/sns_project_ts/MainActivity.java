@@ -16,6 +16,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
@@ -27,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if(user == null){
-            myStartActivity(SignUpActivity.class);
+            myStartActivity(LoginActivity.class);
         }else{
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             DocumentReference docRef = db.collection("users").document(user.getUid());
@@ -37,10 +40,15 @@ public class MainActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if(document != null){
-                            if (document.exists()) {
+                            if (document.exists()) { 
+                                // 개인정보가 있다면 로그인 유지
                                 Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                            } else {
-                                Log.d(TAG, "No such document");
+                                Map<String, Object> hm = document.getData();
+                                String name = hm.get("name").toString();
+                                Log.d(TAG, "DocumentSnapshot data: " + name);
+
+                            } else { 
+                                // 개인정보가 없다면 개인정보 입력창으로 이동
                                 myStartActivity(MemberInitActivity.class);
                             }
                         }
@@ -52,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         findViewById(R.id.logoutButton).setOnClickListener(onClickListener);
+        findViewById(R.id.updateButton).setOnClickListener(onClickListener);
 
 
     }
@@ -59,11 +68,12 @@ public class MainActivity extends AppCompatActivity {
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            switch (v.getId()){
-                case R.id.logoutButton:
-                    FirebaseAuth.getInstance().signOut();
-                    myStartActivity(SignUpActivity.class);
-                    break;
+            int id = v.getId();
+            if (id == R.id.logoutButton) {
+                FirebaseAuth.getInstance().signOut();
+                myStartActivity(LoginActivity.class);
+            } else if (id == R.id.updateButton) {
+                myStartActivity(MemberInitActivity.class);
             }
         }
     };
@@ -72,4 +82,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this,c);
         startActivity(intent);
     }
+
+
 }

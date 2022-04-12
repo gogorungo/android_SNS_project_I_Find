@@ -25,8 +25,18 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        findViewById(R.id.checkButton).setOnClickListener(onClickListener);
-        findViewById(R.id.gotoPasswordResetBtn).setOnClickListener(onClickListener);
+        findViewById(R.id.loginBtn).setOnClickListener(onClickListener);
+        findViewById(R.id.signUpBtn).setOnClickListener(onClickListener);
+        findViewById(R.id.searchPwBtn).setOnClickListener(onClickListener);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        moveTaskToBack(true);
+//        android.os.Process.killProcess(android.os.Process.myPid()); // 안쓰는것이 좋음
+        finish();
+        System.exit(1);
     }
 
 
@@ -34,40 +44,44 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            switch (v.getId()){
-                case R.id.checkButton:
-                    login();
-                    break;
-                case R.id.gotoPasswordResetBtn:
-                    myStartActivity(PasswordResetActivity.class);
-                    break;
+            int id = v.getId();
+            if (id == R.id.loginBtn) {
+                login();
+            } else if (id == R.id.signUpBtn) {
+                myStartActivity(SignUpActivity.class);
+            } else if (id == R.id.searchPwBtn) {
+                myStartActivity(PasswordResetActivity.class);
             }
         }
     };
 
     private void login(){
-        String email = ((EditText)findViewById(R.id.editEmail)).getText().toString();
-        String password = ((EditText)findViewById(R.id.editPw)).getText().toString();
+        String email = ((EditText)findViewById(R.id.inputID)).getText().toString();
+        String password = ((EditText)findViewById(R.id.inputPW)).getText().toString();
 
-        if(email.length() > 0 && password.length() > 0) {
+        if(email.length() > 0 ) {
+            if(password.length() > 0) {
 
-            mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                startToast("로그인 되었습니다");
-                                myStartActivity(MainActivity.class);
-                            } else {
-                                if (task.getException() != null) {
-                                    startToast(task.getException().toString());
+                mAuth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    startToast("로그인 되었습니다");
+                                    myStartActivity(MainActivity.class);
+                                } else {
+                                    if (task.getException() != null) {
+                                        startToast("비밀번호가 틀렸습니다");
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
+            } else {
+                startToast("비밀번호를 입력해주세요");
+            }
         }else{
-            startToast("이메일과 비밀번호를 전부 입력해 주세요");
+            startToast("아이디를 입력해주세요");
         }
 
 

@@ -14,10 +14,6 @@
         android:textColor="#000000"
         android:textSize="30dp" />
 
-
-
-
-
     <EditText
         android:id="@+id/editEmail"
         android:layout_width="match_parent"
@@ -55,13 +51,5 @@
         android:layout_margin="5dp"
         android:text="회원가입"
         android:textSize="25dp"/>
-
-    <Button
-        android:id="@+id/gotoLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="로그인"
-        android:textSize="25dp" />
 
 </LinearLayout>

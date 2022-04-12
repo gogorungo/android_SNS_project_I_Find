@@ -12,4 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="로그 아웃" />
+
+    <Button
+        android:id="@+id/updateButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="개인정보 수정" />
+
 </LinearLayout>
