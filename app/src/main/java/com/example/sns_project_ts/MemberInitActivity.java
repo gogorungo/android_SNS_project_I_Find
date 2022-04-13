@@ -1,5 +1,6 @@
 package com.example.sns_project_ts;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,7 +26,8 @@ import java.util.regex.Pattern;
 
 public class MemberInitActivity extends AppCompatActivity {
     private static final String TAG = "MemberInitActivity";
-    private String dbName, dbPhoneNumber, dbBirthDay, dbAddress;
+    private String dbName, dbPhoneNumber, dbBirthDay, dbAddress, dbEmail;
+    private boolean flag = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +45,14 @@ public class MemberInitActivity extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if(document != null){
                         if (document.exists()) {
+                            flag = false;
                             // 개인정보가 있다면 정보 출력
                             Map<String, Object> hm = document.getData();
                             dbName = hm.get("name").toString();
                             dbPhoneNumber = hm.get("phoneNumber").toString();
                             dbBirthDay = hm.get("birthDay").toString();
                             dbAddress = hm.get("address").toString();
+
 
                             EditText etName = (EditText) findViewById(R.id.nameEditText);
                             EditText etPhoneNumber = (EditText) findViewById(R.id.phoneNumberEditText);
@@ -59,6 +63,11 @@ public class MemberInitActivity extends AppCompatActivity {
                             etPhoneNumber.setText(dbPhoneNumber);
                             etBirthDay.setText(dbBirthDay);
                             etAddress.setText(dbAddress);
+
+                            if(hm.get("email") != null){
+                                dbEmail = hm.get("email").toString();
+                            }
+
                         }
                     }
                 }
@@ -70,7 +79,12 @@ public class MemberInitActivity extends AppCompatActivity {
 
     @Override public void onBackPressed() {
         super.onBackPressed();
-        finish();
+        if(flag){
+            finish();
+            onDestroy();
+        }else{
+            finish();
+        }
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -84,6 +98,10 @@ public class MemberInitActivity extends AppCompatActivity {
     };
 
     private void profileUpdate(){
+        Intent intent = getIntent();
+
+        String email = intent.getStringExtra("email");
+
         String name = ((EditText)findViewById(R.id.nameEditText)).getText().toString();
         String phoneNumber = ((EditText)findViewById(R.id.phoneNumberEditText)).getText().toString();
         String birthDay = ((EditText)findViewById(R.id.birthDayEditText)).getText().toString();
@@ -100,7 +118,12 @@ public class MemberInitActivity extends AppCompatActivity {
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser(); // db의 유저 고유 키 확인용
                                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                                MemberInfo memberInfo = new MemberInfo(name, phoneNumber, birthDay, address);
+                                MemberInfo memberInfo;
+                                if(email != null) {
+                                    memberInfo = new MemberInfo(name, phoneNumber, birthDay, address, email);
+                                }else{
+                                    memberInfo = new MemberInfo(name, phoneNumber, birthDay, address, dbEmail);
+                                }
 
                                 if (user != null) {
                                     db.collection("users").document(user.getUid()).set(memberInfo)
@@ -109,6 +132,7 @@ public class MemberInitActivity extends AppCompatActivity {
                                                 public void onSuccess(Void aVoid) {
                                                     startToast("회원정보 등록을 완료했습니다");
                                                     finish();
+                                                    myStartActivity(MainActivity.class);
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
@@ -142,6 +166,11 @@ public class MemberInitActivity extends AppCompatActivity {
     private void startToast(String msg){
         Toast.makeText(this, msg,
                 Toast.LENGTH_SHORT).show();
+    }
+
+    private void myStartActivity(Class c){
+        Intent intent = new Intent(this,c);
+        startActivity(intent);
     }
 
 }

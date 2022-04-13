@@ -5,6 +5,15 @@ public class MemberInfo {
     private  String phoneNumber;
     private  String birthDay;
     private  String address;
+    private  String email;
+
+    public MemberInfo(String name, String phoneNumber, String birthDay, String address, String email){
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.birthDay = birthDay;
+        this.address = address;
+        this.email = email;
+    }
 
     public MemberInfo(String name, String phoneNumber, String birthDay, String address){
         this.name = name;
@@ -45,5 +54,11 @@ public class MemberInfo {
         this.address = address;
     }
 
+    public String getEmail(){
+        return this.email;
+    }
 
+    public void setEmail(String email){
+        this.email = email;
+    }
 }

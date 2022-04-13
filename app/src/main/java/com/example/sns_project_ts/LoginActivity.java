@@ -27,6 +27,7 @@ public class LoginActivity extends AppCompatActivity {
 
         findViewById(R.id.loginBtn).setOnClickListener(onClickListener);
         findViewById(R.id.signUpBtn).setOnClickListener(onClickListener);
+        findViewById(R.id.searchIdBtn).setOnClickListener(onClickListener);
         findViewById(R.id.searchPwBtn).setOnClickListener(onClickListener);
     }
 
@@ -49,6 +50,8 @@ public class LoginActivity extends AppCompatActivity {
                 login();
             } else if (id == R.id.signUpBtn) {
                 myStartActivity(SignUpActivity.class);
+            } else if (id == R.id.searchIdBtn) {
+                myStartActivity(SearchIDActivity.class);
             } else if (id == R.id.searchPwBtn) {
                 myStartActivity(PasswordResetActivity.class);
             }

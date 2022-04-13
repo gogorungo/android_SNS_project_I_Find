@@ -2,6 +2,7 @@ package com.example.sns_project_ts;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -54,7 +55,8 @@ public class SignUpActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     startToast("회원으로 가입되었습니다");
-                                    myStartActivity(MainActivity.class);
+                                    myStartActivity(MemberInitActivity.class, email);
+                                    finish();
                                 } else {
                                     if(task.getException() != null){
                                         startToast("이미 존재하는 계정입니다");
@@ -78,8 +80,9 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
-    private void myStartActivity(Class c){
+    private void myStartActivity(Class c, String email){
         Intent intent = new Intent(this,c);
+        intent.putExtra("email",email.toString());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 로그인 이후 백스페이스로 로그인창으로 돌아가지 않음
         startActivity(intent);
     }

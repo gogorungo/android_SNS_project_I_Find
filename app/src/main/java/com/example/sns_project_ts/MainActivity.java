@@ -43,9 +43,6 @@ public class MainActivity extends AppCompatActivity {
                             if (document.exists()) { 
                                 // 개인정보가 있다면 로그인 유지
                                 Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                                Map<String, Object> hm = document.getData();
-                                String name = hm.get("name").toString();
-                                Log.d(TAG, "DocumentSnapshot data: " + name);
 
                             } else { 
                                 // 개인정보가 없다면 개인정보 입력창으로 이동
