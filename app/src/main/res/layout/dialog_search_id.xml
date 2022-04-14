@@ -49,6 +49,27 @@
             android:text="아이디 찾기"
             android:textSize="25dp" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="남은 시간 : 60"
+            android:id="@+id/timerNumber"
+            android:gravity="center"
+            android:layout_marginTop="50dp"
+            android:textSize="25dp"
+            />
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_height="wrap_content"
+            android:id="@+id/timerBar"
+            android:max="60"
+            android:layout_marginTop="25dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:progress="60"/>
+
     </LinearLayout>
 
 
