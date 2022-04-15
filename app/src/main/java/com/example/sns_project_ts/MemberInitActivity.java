@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 
 public class MemberInitActivity extends AppCompatActivity {
     private static final String TAG = "MemberInitActivity";
-    private String dbName, dbPhoneNumber, dbBirthDay, dbAddress, dbEmail;
+    private String dbName, dbPhoneNumber, dbBirthDay, dbAddress, dbToken, dbEmail;
     private boolean flag = true;
 
     @Override
@@ -52,6 +52,7 @@ public class MemberInitActivity extends AppCompatActivity {
                             dbPhoneNumber = hm.get("phoneNumber").toString();
                             dbBirthDay = hm.get("birthDay").toString();
                             dbAddress = hm.get("address").toString();
+                            dbToken = hm.get("newToken").toString();
 
 
                             EditText etName = (EditText) findViewById(R.id.nameEditText);
@@ -63,11 +64,6 @@ public class MemberInitActivity extends AppCompatActivity {
                             etPhoneNumber.setText(dbPhoneNumber);
                             etBirthDay.setText(dbBirthDay);
                             etAddress.setText(dbAddress);
-
-                            if(hm.get("email") != null){
-                                dbEmail = hm.get("email").toString();
-                            }
-
                         }
                     }
                 }
@@ -75,6 +71,7 @@ public class MemberInitActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.checkButton).setOnClickListener(onClickListener);
+        findViewById(R.id.logoutButton).setOnClickListener(onClickListener);
     }
 
     @Override public void onBackPressed() {
@@ -91,8 +88,12 @@ public class MemberInitActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            if (v.getId() == R.id.checkButton) {
+            int id = v.getId();
+            if (id == R.id.checkButton) {
                 profileUpdate();
+            } else if (id == R.id.logoutButton) {
+                FirebaseAuth.getInstance().signOut();
+                myStartActivity(LoginActivity.class);
             }
         }
     };
@@ -101,6 +102,7 @@ public class MemberInitActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         String email = intent.getStringExtra("email");
+        String userToken = intent.getStringExtra("newToken");
 
         String name = ((EditText)findViewById(R.id.nameEditText)).getText().toString();
         String phoneNumber = ((EditText)findViewById(R.id.phoneNumberEditText)).getText().toString();
@@ -120,9 +122,9 @@ public class MemberInitActivity extends AppCompatActivity {
 
                                 MemberInfo memberInfo;
                                 if(email != null) {
-                                    memberInfo = new MemberInfo(name, phoneNumber, birthDay, address, email);
+                                    memberInfo = new MemberInfo(name, phoneNumber, birthDay, address, userToken, email);
                                 }else{
-                                    memberInfo = new MemberInfo(name, phoneNumber, birthDay, address, dbEmail);
+                                    memberInfo = new MemberInfo(name, phoneNumber, birthDay, address, dbToken, dbEmail);
                                 }
 
                                 if (user != null) {

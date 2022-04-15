@@ -1,6 +1,7 @@
 package com.example.sns_project_ts;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
@@ -12,20 +13,36 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 public class SearchIDActivity extends AppCompatActivity {
     private static final String TAG = "SearchIDActivity";
+
+    private static RequestQueue requestQueue;
+    private static String regId;
 
 
     @Override
@@ -34,6 +51,11 @@ public class SearchIDActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_id);
 
         findViewById(R.id.checkIDButton).setOnClickListener(onClickListener);
+
+
+        if(requestQueue == null){
+            requestQueue = Volley.newRequestQueue(getApplicationContext());
+        }
 
     }
 
@@ -84,8 +106,8 @@ public class SearchIDActivity extends AppCompatActivity {
                                 Map<String, Object> userData = document.getData();
                                 String userNumber = userData.get("phoneNumber").toString();
                                 if(userNumber.equals(number)){
-                                    String userEmail =  userData.get("email").toString();
-                                    sendSMS(userEmail, userNumber);
+                                    String userEmail = userData.get("email").toString();
+                                    sendSMS(userEmail);
                                     flag = false;
                                     break;
                                 }
@@ -105,7 +127,7 @@ public class SearchIDActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
     }
 
-    private void sendSMS(String email, String number){
+    private void sendSMS(String email){
 
         View dialogView = (View) View.inflate(SearchIDActivity.this,R.layout.dialog_search_id,null);
         ProgressBar timerBar = (ProgressBar) dialogView.findViewById(R.id.timerBar);
@@ -129,12 +151,16 @@ public class SearchIDActivity extends AppCompatActivity {
         EditText codeText = (EditText) dialogView.findViewById(R.id.inputCode);
         Button codeBtn = (Button) dialogView.findViewById(R.id.checkCodeBtn);
 
+
         codeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 String codeA = codeText.getText().toString();
                 String codeQ = String.valueOf(randomCode);
+
+                send(codeQ);
+                Log.d("codeQ")
 
                 if(codeA.equals(codeQ)){
                     aDialog.cancel();
@@ -146,6 +172,8 @@ public class SearchIDActivity extends AppCompatActivity {
                 }
             }
         });
+
+
 
 
         Thread th = new Thread(new Runnable() {
@@ -195,5 +223,111 @@ public class SearchIDActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent != null) {
+            processIntent(intent);
+        }
+    }
+
+    private void processIntent(Intent intent){
+        String from = intent.getStringExtra("from");
+        if(from == null){
+            return;
+        }
+
+        String contents = intent.getStringExtra("contents");
+        startToast("contents");
+    }
+
+    private void send(String input){
+        JSONObject requestData = new JSONObject();
+
+        try {
+            requestData.put("priority","high");
+
+            JSONObject dataObj = new JSONObject();
+            dataObj.put("contents", input);
+            requestData.put("data",dataObj);
+
+            JSONArray idArray = new JSONArray();
+            idArray.put(0, regId);
+            requestData.put("registration_ids",idArray);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        sendData(requestData, new SendResponseListener(){
+            @Override
+            public void onRequestCompleted() {
+
+            }
+
+            @Override
+            public void onRequestStarted() {
+
+            }
+
+            @Override
+            public void onRequestWithError(VolleyError error) {
+
+            }
+        });
+
+    }
+
+    public interface SendResponseListener {
+        public void onRequestStarted();
+        public void onRequestCompleted();
+        public void onRequestWithError(VolleyError error);
+    }
+
+    public void sendData(JSONObject requestData, final SendResponseListener listener){
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST,
+                "https://fcm.googleapis.com/fcm/send",
+                requestData,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        listener.onRequestCompleted();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                listener.onRequestWithError(error);
+            }
+        }
+
+        ){
+            @Nullable
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+
+
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String,String> headers = new HashMap<String, String>();
+                headers.put("Authorization",
+                        "key=AAAA5VpToT4:APA91bFwnY5WE4bmDN52ENuR1HGk9lKbE8LE_qjxqyuTzS0P9R6QO1yNZfpdv6sJTZ3dj68KkOMLNkL9cwtsv_wQpSrAYh0Bfd_gtCOCT8VVaRwjNYDtJn_869IfSbi8elfYOBtaEdsB");
+                return headers;
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/json";
+            }
+        };
+
+        request.setShouldCache(false);
+        listener.onRequestStarted();
+        requestQueue.add(request);
+    }
 
 }

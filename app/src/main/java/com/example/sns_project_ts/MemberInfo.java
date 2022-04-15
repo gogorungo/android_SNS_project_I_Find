@@ -1,25 +1,28 @@
 package com.example.sns_project_ts;
 
 public class MemberInfo {
-    private  String name;
-    private  String phoneNumber;
-    private  String birthDay;
-    private  String address;
-    private  String email;
+    private String name;
+    private String phoneNumber;
+    private String birthDay;
+    private String address;
+    private String email;
+    private String userToken;
 
-    public MemberInfo(String name, String phoneNumber, String birthDay, String address, String email){
+    public MemberInfo(String name, String phoneNumber, String birthDay, String address, String userToken, String email){
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.birthDay = birthDay;
         this.address = address;
         this.email = email;
+        this.userToken = userToken;
     }
 
-    public MemberInfo(String name, String phoneNumber, String birthDay, String address){
+    public MemberInfo(String name, String phoneNumber, String birthDay, String address, String userToken){
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.birthDay = birthDay;
         this.address = address;
+        this.userToken = userToken;
     }
 
     public String getName(){
@@ -60,5 +63,13 @@ public class MemberInfo {
 
     public void setEmail(String email){
         this.email = email;
+    }
+
+    public String getUserToken(){
+        return this.userToken;
+    }
+
+    public void setUserToken(String userToken){
+        this.userToken = userToken;
     }
 }
