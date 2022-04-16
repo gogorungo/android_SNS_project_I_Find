@@ -22,7 +22,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 public class SignUpActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
-    private String newToken;
+//    private String newToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         findViewById(R.id.signUpOKBtn).setOnClickListener(onClickListener);
 
-        userToken();
+//        userToken();
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -64,7 +64,7 @@ public class SignUpActivity extends AppCompatActivity {
                                     FirebaseUser user = mAuth.getCurrentUser();
 
                                     startToast("회원으로 가입되었습니다");
-                                    myStartActivity(MemberInitActivity.class, newToken, email);
+                                    myStartActivity(MemberInitActivity.class, email);
                                     finish();
                                 } else {
                                     if (task.getException() != null) {
@@ -89,28 +89,28 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
-    private void myStartActivity(Class c, String newToken, String email) {
+    private void myStartActivity(Class c, String email) {
         Intent intent = new Intent(this, c);
         intent.putExtra("email", email.toString());
-        intent.putExtra("newToken", newToken);
+//        intent.putExtra("newToken", newToken);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 로그인 이후 백스페이스로 로그인창으로 돌아가지 않음
         startActivity(intent);
     }
 
-    private void userToken() {
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.e("SignUpActivity", "토큰 가져오는데 실패함", task.getException());
-                            return;
-                        }
-
-                        newToken = task.getResult();
-                    }
-                });
-
-    }
+//    private void userToken() {
+//        FirebaseMessaging.getInstance().getToken()
+//                .addOnCompleteListener(new OnCompleteListener<String>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<String> task) {
+//                        if (!task.isSuccessful()) {
+//                            Log.e("SignUpActivity", "토큰 가져오는데 실패함", task.getException());
+//                            return;
+//                        }
+//
+//                        newToken = task.getResult();
+//                    }
+//                });
+//
+//    }
 }
 

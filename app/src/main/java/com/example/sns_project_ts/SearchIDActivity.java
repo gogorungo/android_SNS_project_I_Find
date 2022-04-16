@@ -26,6 +26,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -42,7 +44,6 @@ public class SearchIDActivity extends AppCompatActivity {
     private static final String TAG = "SearchIDActivity";
 
     private static RequestQueue requestQueue;
-    private static String regId;
 
 
     @Override
@@ -124,7 +125,7 @@ public class SearchIDActivity extends AppCompatActivity {
 
     private void startToast(String msg){
         Toast.makeText(this, msg,
-                Toast.LENGTH_SHORT).show();
+                Toast.LENGTH_LONG).show();
     }
 
     private void sendSMS(String email){
@@ -147,6 +148,8 @@ public class SearchIDActivity extends AppCompatActivity {
 
         int randomCode = (int) (1 + Math.random() * 999999);
         Log.d(TAG, "codeNumber1 "+ randomCode);
+        String codeQ = String.valueOf(randomCode);
+        startToast(codeQ);
 
         EditText codeText = (EditText) dialogView.findViewById(R.id.inputCode);
         Button codeBtn = (Button) dialogView.findViewById(R.id.checkCodeBtn);
@@ -158,9 +161,6 @@ public class SearchIDActivity extends AppCompatActivity {
 
                 String codeA = codeText.getText().toString();
                 String codeQ = String.valueOf(randomCode);
-
-                send(codeQ);
-                Log.d("codeQ")
 
                 if(codeA.equals(codeQ)){
                     aDialog.cancel();
@@ -222,112 +222,4 @@ public class SearchIDActivity extends AppCompatActivity {
         alertDialog.show();
 
     }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        if (intent != null) {
-            processIntent(intent);
-        }
-    }
-
-    private void processIntent(Intent intent){
-        String from = intent.getStringExtra("from");
-        if(from == null){
-            return;
-        }
-
-        String contents = intent.getStringExtra("contents");
-        startToast("contents");
-    }
-
-    private void send(String input){
-        JSONObject requestData = new JSONObject();
-
-        try {
-            requestData.put("priority","high");
-
-            JSONObject dataObj = new JSONObject();
-            dataObj.put("contents", input);
-            requestData.put("data",dataObj);
-
-            JSONArray idArray = new JSONArray();
-            idArray.put(0, regId);
-            requestData.put("registration_ids",idArray);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        sendData(requestData, new SendResponseListener(){
-            @Override
-            public void onRequestCompleted() {
-
-            }
-
-            @Override
-            public void onRequestStarted() {
-
-            }
-
-            @Override
-            public void onRequestWithError(VolleyError error) {
-
-            }
-        });
-
-    }
-
-    public interface SendResponseListener {
-        public void onRequestStarted();
-        public void onRequestCompleted();
-        public void onRequestWithError(VolleyError error);
-    }
-
-    public void sendData(JSONObject requestData, final SendResponseListener listener){
-        JsonObjectRequest request = new JsonObjectRequest(
-                Request.Method.POST,
-                "https://fcm.googleapis.com/fcm/send",
-                requestData,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        listener.onRequestCompleted();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                listener.onRequestWithError(error);
-            }
-        }
-
-        ){
-            @Nullable
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-
-
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String,String> headers = new HashMap<String, String>();
-                headers.put("Authorization",
-                        "key=AAAA5VpToT4:APA91bFwnY5WE4bmDN52ENuR1HGk9lKbE8LE_qjxqyuTzS0P9R6QO1yNZfpdv6sJTZ3dj68KkOMLNkL9cwtsv_wQpSrAYh0Bfd_gtCOCT8VVaRwjNYDtJn_869IfSbi8elfYOBtaEdsB");
-                return headers;
-            }
-
-            @Override
-            public String getBodyContentType() {
-                return "application/json";
-            }
-        };
-
-        request.setShouldCache(false);
-        listener.onRequestStarted();
-        requestQueue.add(request);
-    }
-
 }
