@@ -21,6 +21,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -28,6 +29,7 @@ public class MemberInitActivity extends AppCompatActivity {
     private static final String TAG = "MemberInitActivity";
     private String dbName, dbPhoneNumber, dbBirthDay, dbAddress, dbEmail;
     private boolean flag = true;
+    String userUid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +37,16 @@ public class MemberInitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_member_init);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if(user != null){
+            userUid = user.getUid();
+        }
+
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("users").document(user.getUid());
+
+
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -111,6 +121,7 @@ public class MemberInitActivity extends AppCompatActivity {
         String address = ((EditText)findViewById(R.id.addressEditText)).getText().toString();
 
 
+
         if(name.length() > 0 ) {
             if(Pattern.matches("^[0-9]*$",phoneNumber)) {
                 if(phoneNumber.length() == 11) {
@@ -123,9 +134,9 @@ public class MemberInitActivity extends AppCompatActivity {
 
                                 MemberInfo memberInfo;
                                 if(email != null) {
-                                    memberInfo = new MemberInfo(name, phoneNumber, birthDay, address, email);
+                                    memberInfo = new MemberInfo(name, phoneNumber, birthDay, address, email, userUid);
                                 }else{
-                                    memberInfo = new MemberInfo(name, phoneNumber, birthDay, address, dbEmail);
+                                    memberInfo = new MemberInfo(name, phoneNumber, birthDay, address, dbEmail, userUid);
                                 }
 
                                 if (user != null) {

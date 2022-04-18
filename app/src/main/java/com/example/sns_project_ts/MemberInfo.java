@@ -6,20 +6,15 @@ public class MemberInfo {
     private String birthDay;
     private String address;
     private String email;
+    private String userUid;
 
-    public MemberInfo(String name, String phoneNumber, String birthDay, String address, String email){
+    public MemberInfo(String name, String phoneNumber, String birthDay, String address, String email, String userUid){
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.birthDay = birthDay;
         this.address = address;
         this.email = email;
-    }
-
-    public MemberInfo(String name, String phoneNumber, String birthDay, String address){
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.birthDay = birthDay;
-        this.address = address;
+        this.userUid = userUid;
     }
 
     public String getName(){
@@ -60,6 +55,14 @@ public class MemberInfo {
 
     public void setEmail(String email){
         this.email = email;
+    }
+
+    public String getUserUid(){
+        return this.userUid;
+    }
+
+    public void setUserUid(String userUid){
+        this.userUid = userUid;
     }
 
 }
