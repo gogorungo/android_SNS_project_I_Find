@@ -91,12 +91,15 @@ public class SearchIDActivity extends AppCompatActivity {
                                 Log.d(TAG, "find_id_log " + document.getId() + " => " + document.getData() + " userEmail" );
 
                                 Map<String, Object> userData = document.getData();
-                                String userNumber = userData.get("phoneNumber").toString();
-                                if(userNumber.equals(number)){
-                                    String userEmail = userData.get("email").toString();
-                                    sendSMS(userEmail);
-                                    flag = false;
-                                    break;
+
+                                if(userData.get("phoneNumber") != null) {
+                                    String userNumber = userData.get("phoneNumber").toString();
+                                    if (userNumber.equals(number)) {
+                                        String userEmail = userData.get("email").toString();
+                                        sendSMS(userEmail);
+                                        flag = false;
+                                        break;
+                                    }
                                 }
                             }
                             if(flag){
